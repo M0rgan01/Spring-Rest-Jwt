@@ -49,8 +49,8 @@ public class SpringRestProjectWsApplication implements CommandLineRunner{
 //		taskRepository.findAll().forEach(t->{
 //			System.out.println(t.getTaskName());
 //		});
-//		accountService.saveContact(new Contact("admin", new Date(), "admin@gmail.com", "1234", "1234", "1452"));
-//		accountService.saveContact(new Contact("user", new Date(), "admin@gmail.com", "1234", "1234", "1452"));
+//		accountService.saveContact(new Contact("admin", new Date(), "admin@gmail.com", "1234", "1234", "1452", true));
+//		accountService.saveContact(new Contact("user", new Date(), "admin@gmail.com", "1234", "1234", "1452", true));
 //		accountService.saveRole(new Roles("ROLE_ADMIN"));
 //		accountService.saveRole(new Roles("ROLE_USER"));
 //		accountService.addRoleToContact("admin", "ROLE_ADMIN");

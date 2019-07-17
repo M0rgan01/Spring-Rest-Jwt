@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Entity
@@ -31,12 +32,14 @@ public class Contact{
 	private String passWord;
 	private String tel;
 	private String photo;
+	@JsonIgnore
+	private boolean active;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Collection<Roles> roles = new HashSet<>();
 		
 	
-	public Contact(String userName, Date dateNaissance, String email, String passWord, String tel, String photo) {
+	public Contact(String userName, Date dateNaissance, String email, String passWord, String tel, String photo, boolean active) {
 		super();
 		this.userName = userName;
 		this.dateNaissance = dateNaissance;
@@ -44,6 +47,7 @@ public class Contact{
 		this.passWord = passWord;
 		this.tel = tel;
 		this.photo = photo;
+		this.active = active;
 	}
 	
 	public Contact() {
@@ -101,6 +105,14 @@ public class Contact{
 	}
 	public void setRoles(Collection<Roles> roles) {
 		this.roles = roles;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 	
 	

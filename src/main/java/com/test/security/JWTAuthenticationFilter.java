@@ -59,17 +59,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-									
+						
 		//recuperation de l'objet spring utilisateur 
 		User springUser = (User) authResult.getPrincipal();
 		
 		//construction du Json web token		
-		String jwt = jwtService.createToken(springUser.getUsername(), springUser.getAuthorities());
+		String jwtAuth = jwtService.createAuthToken(springUser.getUsername(), springUser.getAuthorities());
+		String jwtRefresh = jwtService.createRefreshToken(springUser.getUsername(), springUser.getAuthorities());
 		
-		
-		//on ajoute le token à l'en-tête de la réponse
-		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
-		
+		//on ajoute le token d'auth et le token de refresh à l'en-tête de la réponse
+		response.addHeader(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwtAuth);
+		response.addHeader(SecurityConstants.HEADER_REFRESH_STRING, SecurityConstants.TOKEN_PREFIX + jwtRefresh);
 	}
 
 }

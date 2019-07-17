@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// desacive la creation de session par spring
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http.authorizeRequests().antMatchers("/login/**", "/register/**").permitAll();
+		http.authorizeRequests().antMatchers("/login/**", "/register/**","/token-refresh/**").permitAll();
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/tasks/**").hasAnyAuthority("ROLE_ADMIN");
 		http.authorizeRequests().anyRequest().authenticated();
 
@@ -103,9 +103,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // méthode autorisé
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         //en-tête autorisé
-        configuration.setAllowedHeaders(Arrays.asList("Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Authorization", "Access-Control-Request-Headers"));
+        configuration.setAllowedHeaders(Arrays.asList("Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Authorization", "Access-Control-Request-Headers", "refresh"));
         //en-tête exposé
-        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Authorization", "Access-Control-Allow-Credentials"));
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Authorization", "refresh", "Access-Control-Allow-Credentials"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         // les adresses utilisé avec la configuration cors
         source.registerCorsConfiguration("/**", configuration);
