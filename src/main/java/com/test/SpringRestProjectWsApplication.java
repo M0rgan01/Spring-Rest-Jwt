@@ -1,27 +1,16 @@
 package com.test;
 
-import java.util.Date;
-
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.test.business.AccountService;
+import com.test.business.ContactService;
 import com.test.dao.ContactRepository;
 import com.test.dao.TaskRepository;
-import com.test.entities.Contact;
-import com.test.entities.Roles;
-import com.test.entities.Task;
-import com.test.security.JWTAuthenticationFilter;
-import com.test.security.JWTAuthorizationFilter;
 
 @SpringBootApplication
 public class SpringRestProjectWsApplication implements CommandLineRunner{
@@ -32,12 +21,24 @@ public class SpringRestProjectWsApplication implements CommandLineRunner{
 	@Autowired
 	private TaskRepository taskRepository;
 	@Autowired
-	private AccountService accountService;
+	private ContactService contactService;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(SpringRestProjectWsApplication.class, args);
 	}
 
+	
+	@Bean
+	public BCryptPasswordEncoder getBCPE() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public ObjectMapper getOM() {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper;
+	}
+	
 	@Override
 	public void run(String... args) throws Exception {
 		//contactRepository.save(new Contact("pichat","morgan", new Date(), "pichat.morgan@gmail.com","0474000000","test"));

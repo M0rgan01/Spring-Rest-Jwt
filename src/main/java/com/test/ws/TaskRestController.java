@@ -17,12 +17,12 @@ public class TaskRestController {
 	@Autowired
 	private TaskRepository taskRepository;
 		
-	@GetMapping("/tasks")
+	@GetMapping("/api/tasks")
 	public List<Task> listTasks(){
 		return taskRepository.findAll();
 	}
 	
-	@PostMapping("/tasks")
+	@PostMapping("/api/tasks")
 	public Task save (@RequestBody Task t) {
 		return taskRepository.save(t);
 		

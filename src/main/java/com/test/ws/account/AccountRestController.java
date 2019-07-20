@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.test.business.AccountService;
-import com.test.business.JwtService;
+import com.test.business.ContactService;
 import com.test.entities.Contact;
 import com.test.entities.ContactDTO;
 import com.test.entities.Roles;
 import com.test.exception.BusinessException;
 import com.test.security.SecurityConstants;
+import com.test.security.token.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -36,18 +36,18 @@ import io.jsonwebtoken.JwtException;
 public class AccountRestController {
 
 	@Autowired
-	private AccountService accountService;
+	private ContactService accountService;
 	@Autowired
 	private JwtService jwtService;
 
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody ContactDTO contactDTO) throws BusinessException {
 
-		try {
-			accountService.validateContact(contactDTO);
-		} catch (BusinessException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-		}
+//		try {
+//			accountService.validateContact(contactDTO);
+//		} catch (BusinessException e) {
+//			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+//		}
 
 		Contact contact = new Contact();
 		contact.setUserName(contactDTO.getUsername());
@@ -64,13 +64,13 @@ public class AccountRestController {
 		}
 
 		// on créer un token JWT
-		String jwt = jwtService.createAuthToken(contact.getUserName(), collection);
-		String jwtRefresh = jwtService.createRefreshToken(contact.getUserName(), collection);
+		//String jwt = jwtService.createAuthToken(contact.getUserName(), collection);
+	//	String jwtRefresh = jwtService.createRefreshToken(contact.getUserName(), collection);
 
 		// on l'ajoute au headers de la réponse
 		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
-		responseHeaders.add(SecurityConstants.HEADER_REFRESH_STRING, SecurityConstants.TOKEN_PREFIX + jwtRefresh);
+		//responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
+		//responseHeaders.add(SecurityConstants.HEADER_REFRESH_STRING, SecurityConstants.TOKEN_PREFIX + jwtRefresh);
 
 		return new ResponseEntity<Contact>(contact, responseHeaders, HttpStatus.OK);
 	}
@@ -82,10 +82,10 @@ public class AccountRestController {
 			Claims claims = jwtService.validateRefreshToken(tokenRefresh);
 
 			// on créer un token JWT
-			String jwt = jwtService.createAuthToken(claims.getSubject(), jwtService.getListAuthorities(claims));
+			//String jwt = jwtService.createAuthToken(claims.getSubject(), jwtService.getListAuthorities(claims));
 
 			HttpHeaders responseHeaders = new HttpHeaders();
-			responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
+			//responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
 			responseHeaders.add(SecurityConstants.HEADER_REFRESH_STRING, SecurityConstants.TOKEN_PREFIX + tokenRefresh);
 			
 			return new ResponseEntity<String>(null ,responseHeaders, HttpStatus.OK);

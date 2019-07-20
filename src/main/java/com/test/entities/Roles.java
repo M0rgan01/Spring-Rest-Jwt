@@ -36,4 +36,10 @@ public class Roles{
 	public void setRole(String role) {
 		this.role = role;
 	}
+	
+	public String getAuthority() {
+		return role;
+		
+	}
+	
 }

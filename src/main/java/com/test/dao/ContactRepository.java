@@ -1,5 +1,7 @@
 package com.test.dao;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +14,5 @@ public interface ContactRepository extends JpaRepository<Contact, Long>{
 
 	@Query("select c from Contact c where c.userName like :x order by c.id")
 	public Page<Contact> chercher(@Param("x")String mc, Pageable pageable);
-	public Contact findByUserName(String username);
+	public Optional<Contact> findByUserName(String username);
 }
