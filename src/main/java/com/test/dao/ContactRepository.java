@@ -15,4 +15,6 @@ public interface ContactRepository extends JpaRepository<Contact, Long>{
 	@Query("select c from Contact c where c.userName like :x order by c.id")
 	public Page<Contact> chercher(@Param("x")String mc, Pageable pageable);
 	public Optional<Contact> findByUserName(String username);
+	@Query("select c from Contact c where c.mail.email like :x")
+	public Optional<Contact> findByEmail(@Param("x")String email);
 }

@@ -41,8 +41,6 @@ public class LoginAwareAuthenticationFailureHandler implements AuthenticationFai
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {
 		
-		System.out.println("Entrée onAuthenticationFailure de LoginAwareAuthenticationFailureHandler");
-		
 		// mise en place du code et du contenu de la réponse
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -56,7 +54,5 @@ public class LoginAwareAuthenticationFailureHandler implements AuthenticationFai
 		}
 		
 		mapper.writeValue(response.getWriter(), ErrorResponse.of("Authentication failed", ErrorCode.AUTHENTICATION, HttpStatus.UNAUTHORIZED));
-		
-		System.out.println("Sortie onAuthenticationFailure de LoginAwareAuthenticationFailureHandler");
 	}
 }

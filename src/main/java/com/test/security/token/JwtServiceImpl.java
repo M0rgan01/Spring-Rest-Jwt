@@ -86,10 +86,10 @@ public class JwtServiceImpl implements JwtService{
 
 		
 	@Override
-	public UserContext validateRefreshToken(String token) {
+	public UserContext validateRefreshToken(String header) {
 		// on récupère le token dans un object Claims
 		Claims claims = Jwts.parser().setSigningKey(SecurityConstants.SECRET) // on assigne le secret
-				.parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, "")) // on enlève le préfixe
+				.parseClaimsJws(extract(header)) // on enlève le préfixe
 				.getBody(); // on récupère le corp
 		
 		// on recupere le contact pour comparaison
@@ -97,7 +97,7 @@ public class JwtServiceImpl implements JwtService{
 					
 		//si le contact est toujours bon, alors le token est toujours valide
 		if(contact.isActive() == (boolean) claims.get(SecurityConstants.REFRESH_ACTIVE_PREFIX))
-			return UserContext.create(claims.getSubject(), getListAuthorities(claims));
+			return UserContext.create(claims.getSubject(), contactService.getAuthorities(contact.getRoles()));
 		
 		return null;
 	}

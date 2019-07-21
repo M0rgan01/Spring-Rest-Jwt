@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.test.business.ContactService;
 import com.test.entities.Contact;
 import com.test.security.exception.AuthMethodNotSupportedException;
 
@@ -38,21 +39,20 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
     private final ObjectMapper objectMapper;
-    
+    private final ContactService contactService;
        
     public LoginProcessingFilter(String defaultProcessUrl, AuthenticationSuccessHandler successHandler, 
-            AuthenticationFailureHandler failureHandler, ObjectMapper mapper) {
+            AuthenticationFailureHandler failureHandler, ObjectMapper mapper, ContactService contactService) {
         super(defaultProcessUrl);
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
         this.objectMapper = mapper;
+        this.contactService = contactService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-    	
-    	 System.out.println("Entrée attemptAuthentication de LoginProcessingFilter");
     	
     	// vérification que la méthode soit bien POST
         if (!HttpMethod.POST.name().equals(request.getMethod())) {
@@ -65,14 +65,13 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
         //récupération du json contenu dans le corp de requete
         Contact contact = objectMapper.readValue(request.getInputStream(), Contact.class);
         
-        //vérification de la validité de l'object
-        if(contact.getUserName() == null || contact.getUserName().isEmpty() || contact.getPassWord() == null || contact.getPassWord().isEmpty())
-        	throw new AuthenticationServiceException("Un champ n'est pas rempli");	
-        	
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(contact.getUserName(), contact.getPassWord());
-
-        System.out.println("Sortie attemptAuthentication de LoginProcessingFilter");
+        String principal = contactService.getPrincipal(contact);
+                    
+        if(contact.getPassWord() == null || contact.getPassWord().isEmpty())
+        	throw new AuthenticationServiceException("empty.password");	
         
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, contact.getPassWord());
+
         //processus d'authentification
         return this.getAuthenticationManager().authenticate(token);
     }

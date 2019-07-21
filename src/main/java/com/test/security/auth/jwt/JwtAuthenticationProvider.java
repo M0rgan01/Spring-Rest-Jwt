@@ -34,8 +34,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	
-    	System.out.println("Entrée authenticate de JwtAuthenticationProvider");
-    	
         JwtToken jwtToken = (JwtToken) authentication.getCredentials();
 
         //on récupère les claimes, tout en vérifiant le token
@@ -46,9 +44,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         
         //création d'un utilisateur grace au nom à la liste de role contenu dans le token
         UserContext context = UserContext.create(subject, jwtService.getListAuthorities(jwsClaims.getBody()));
-        
-        System.out.println("Sortie authenticate de JwtAuthenticationProvider");
-        
+          
         return new JwtAuthenticationToken(context, context.getAuthorities());
     }
 

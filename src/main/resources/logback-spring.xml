@@ -5,14 +5,6 @@
 
 	<appender name="Console"
 		class="ch.qos.logback.core.ConsoleAppender">
-
-		<!-- filtre de gravité des messages -->
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>INFO</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>
 				%d %p %C{1.} [%t] %m%n
@@ -22,14 +14,6 @@
 
 	<appender name="RollingFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-
-		<!-- filtre de gravité des messages -->
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>ERROR</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-
 		<file>${LOGS}/spring-boot-logger.log</file>
 		<encoder
 			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -49,16 +33,15 @@
 	</appender>
 
 
-	<root level="INFO">
+	<root level="info">
 		<appender-ref ref="Console" />
-		<!-- <appender-ref ref="RollingFile" /> -->
+<!-- 		<appender-ref ref="RollingFile" /> -->
 	</root>
-
-<!-- logger à configurer pour différent package -->
-	<!-- <logger name="com.test" level="trace" additivity="false"> -->
-	<!-- <appender-ref ref="RollingFile" /> -->
-	<!-- <appender-ref ref="Console" /> -->
-	<!-- </logger> -->
+	
+<!-- 	<logger name="com.bibliotheque" level="trace" additivity="false"> -->
+<!-- 		<appender-ref ref="RollingFile" /> -->
+<!-- 		<appender-ref ref="Console" /> -->
+<!-- 	</logger> -->
 
 
 </configuration>

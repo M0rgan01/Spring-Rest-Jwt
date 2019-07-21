@@ -39,9 +39,7 @@ public class LoginAwareAuthenticationSuccessHandler implements AuthenticationSuc
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-    	
-    	System.out.println("Entrée onAuthenticationSuccess de LoginAwareAuthenticationSuccessHandler");
-    	
+    		
         UserContext userContext = (UserContext) authentication.getPrincipal();
         
         //création des token
@@ -56,7 +54,6 @@ public class LoginAwareAuthenticationSuccessHandler implements AuthenticationSuc
       	response.addHeader(SecurityConstants.HEADER_REFRESH_STRING, SecurityConstants.TOKEN_PREFIX + refreshToken);
         clearAuthenticationAttributes(request);
         
-        System.out.println("Sortie onAuthenticationSuccess de LoginAwareAuthenticationSuccessHandler");
     }
 
     /**

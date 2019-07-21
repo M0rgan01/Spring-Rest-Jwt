@@ -42,19 +42,18 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-		System.out.println("Entrée authenticate de LoginAuthenticationProvider");
-
 		// vérification de l'objet authentication
 		Assert.notNull(authentication, "No authentication data provided");
 
 		// récupération des information de connection
 		String username = (String) authentication.getPrincipal();
 		String password = (String) authentication.getCredentials();
-
+		
 		// récupération du contact pour la comparaison
 		Contact contact = contactService.findContactByUserName(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
+				.orElseGet(() ->contactService.findContactByEmail(username)
+						.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username)));
+							
 		// vérification du password
 		if (!encoder.matches(password, contact.getPassWord())) {
 			throw new BadCredentialsException("Authentication Failed. Username or Password not valid.");
@@ -69,8 +68,6 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 				.map(authority -> new SimpleGrantedAuthority(authority.getAuthority())).collect(Collectors.toList());
 
 		UserContext userContext = UserContext.create(contact.getUserName(), authorities);
-
-		System.out.println("Sortie authenticate de LoginAuthenticationProvider");
 
 		return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
 	}

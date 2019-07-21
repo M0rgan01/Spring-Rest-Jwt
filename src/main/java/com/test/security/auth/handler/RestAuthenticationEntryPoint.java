@@ -28,7 +28,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		
 		//mise au point du code de status et du contenu de la réponse
 		response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
-		
-		System.out.println("Entrée commence de RestAuthenticationEntryPoint");
+
 	}
 }

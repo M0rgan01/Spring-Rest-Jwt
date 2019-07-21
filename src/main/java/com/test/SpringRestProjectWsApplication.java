@@ -1,5 +1,7 @@
 package com.test;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.business.ContactService;
 import com.test.dao.ContactRepository;
 import com.test.dao.TaskRepository;
+import com.test.entities.Contact;
+import com.test.entities.Mail;
+import com.test.entities.Roles;
+import com.test.entities.Task;
 
 @SpringBootApplication
 public class SpringRestProjectWsApplication implements CommandLineRunner{
@@ -45,6 +51,7 @@ public class SpringRestProjectWsApplication implements CommandLineRunner{
 	
 	@Override
 	public void run(String... args) throws Exception {
+		
 		//contactRepository.save(new Contact("pichat","morgan", new Date(), "pichat.morgan@gmail.com","0474000000","test"));
 //		taskRepository.save(new Task("Tache 1"));
 //		taskRepository.save(new Task("Tache 2"));
@@ -54,13 +61,17 @@ public class SpringRestProjectWsApplication implements CommandLineRunner{
 //		taskRepository.findAll().forEach(t->{
 //			System.out.println(t.getTaskName());
 //		});
-//		accountService.saveContact(new Contact("admin", new Date(), "admin@gmail.com", "1234", "1234", "1452", true));
-//		accountService.saveContact(new Contact("user", new Date(), "admin@gmail.com", "1234", "1234", "1452", true));
-//		accountService.saveRole(new Roles("ROLE_ADMIN"));
-//		accountService.saveRole(new Roles("ROLE_USER"));
-//		accountService.addRoleToContact("admin", "ROLE_ADMIN");
-//		accountService.addRoleToContact("admin", "ROLE_USER");
-//		accountService.addRoleToContact("user", "ROLE_USER");
+//		
+//		Mail mail = new Mail("admin@gmail.com");
+//		Mail mail2 = new Mail("user@gmail.com");
+//		
+//		contactService.saveContact(new Contact("admin", new Date(), mail, "1234", "1234", "1452", true));
+//		contactService.saveContact(new Contact("user", new Date(), mail2, "1234", "1234", "1452", true));
+//		contactService.saveRole(new Roles("ROLE_ADMIN"));
+//		contactService.saveRole(new Roles("ROLE_USER"));
+//		contactService.addRoleToContact("admin", "ROLE_ADMIN");
+//		contactService.addRoleToContact("admin", "ROLE_USER");
+//		contactService.addRoleToContact("user", "ROLE_USER");
 	
 	}
 
