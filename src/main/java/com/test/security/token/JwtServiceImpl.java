@@ -3,7 +3,6 @@ package com.test.security.token;
 
 
 import java.util.Date;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,10 +42,6 @@ public class JwtServiceImpl implements JwtService{
 							
 		// on recupere la liste des roles
 		List<String> roles = claims.get(SecurityConstants.AUTHORITIES_PREFIX, List.class);
-
-		roles.forEach(e -> {
-			System.out.println(e);
-		});
 
 		// on l'assigne a une list spring d'authorities
 		List<GrantedAuthority> authorities = roles.stream().map(SimpleGrantedAuthority::new)
@@ -91,22 +86,23 @@ public class JwtServiceImpl implements JwtService{
 
 		
 	@Override
-	public Claims validateRefreshToken(String token) {
+	public UserContext validateRefreshToken(String token) {
 		// on récupère le token dans un object Claims
 		Claims claims = Jwts.parser().setSigningKey(SecurityConstants.SECRET) // on assigne le secret
 				.parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, "")) // on enlève le préfixe
 				.getBody(); // on récupère le corp
 		
 		// on recupere le contact pour comparaison
-		Contact contact= contactService.findContactByUserName(claims.getSubject()).orElseThrow(() -> new UsernameNotFoundException("User not found: " + claims.getSubject()));
-		
+		Contact contact = contactService.findContactByUserName(claims.getSubject()).orElseThrow(() -> new UsernameNotFoundException("User not found: " + claims.getSubject()));
+					
 		//si le contact est toujours bon, alors le token est toujours valide
 		if(contact.isActive() == (boolean) claims.get(SecurityConstants.REFRESH_ACTIVE_PREFIX))
-			return claims;
+			return UserContext.create(claims.getSubject(), getListAuthorities(claims));
 		
 		return null;
 	}
 
+	
 	@Override
 	public String extract(String header) {
 	      if (header == null || header.isEmpty()) {

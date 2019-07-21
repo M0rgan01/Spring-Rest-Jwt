@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import com.test.security.auth.model.UserContext;
 
 /**
- * An {@link org.springframework.security.core.Authentication} implementation
- * that is designed for simple presentation of JwtToken.
+ * Une simple implementation de {@link org.springframework.security.core.Authentication},
+ * qui aura pour role une simple présentation de JwtToken.
  * 
  * @author pichat morgan
  *

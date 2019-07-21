@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.test.dao.ContactRepository;
 import com.test.dao.RoleRepository;
 import com.test.entities.Contact;
-import com.test.entities.ContactDTO;
 import com.test.entities.Roles;
 import com.test.exception.BusinessException;
 
@@ -68,21 +67,21 @@ public class ContactServiceImpl implements ContactService{
 	}
 
 	
-	public void validateCreateContact(ContactDTO contactDTO) throws BusinessException {
+	public void validateCreateContact(Contact contact) throws BusinessException {
 		
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
-		Set<ConstraintViolation<ContactDTO>> violations = validator.validate(contactDTO);
+		Set<ConstraintViolation<Contact>> violations = validator.validate(contact);
 		
-		for (ConstraintViolation<ContactDTO> violation : violations) {		    
+		for (ConstraintViolation<Contact> violation : violations) {		    
 		    throw new BusinessException(violation.getMessage());
 		}
 
-		if (!contactDTO.getPassword().equals(contactDTO.getConfirm()))
+		if (!contact.getPassWord().equals(contact.getConfirm()))
 			throw new BusinessException("mauvaise confirmation du mot de passe");
 		
 		
-		Contact testExist = findContactByUserName(contactDTO.getUsername()).orElse(null);
+		Contact testExist = findContactByUserName(contact.getUserName()).orElse(null);
 		
 		if (testExist != null)
 			throw new BusinessException("This user already exists");			

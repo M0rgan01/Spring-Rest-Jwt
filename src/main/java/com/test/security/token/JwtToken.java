@@ -15,6 +15,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 
 
 /**
+ * Représention d'un JWT pour l'authentification
  * 
  * @author pichat morgan
  *

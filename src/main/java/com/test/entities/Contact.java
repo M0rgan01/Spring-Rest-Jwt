@@ -13,9 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Contact{
@@ -23,16 +26,22 @@ public class Contact{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	@Column(unique = true) // n'autorise pas 2 userName identique
+	@NotBlank(message="contact.username.blank")
+	@Size(min = 5, max = 15, message = "contact.username.size.not.correct")
 	private String userName;
+	
 	@Temporal(TemporalType.DATE) // --> renseigne uniquement la DATE 01/01/1991
 	private Date dateNaissance;
+	
 	private String email;
-	//@JsonIgnore
+	
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$", message = "contact.password.not.true")
 	private String passWord;
+	private String confirm;
 	private String tel;
 	private String photo;
-	@JsonIgnore
 	private boolean active;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -92,14 +101,26 @@ public class Contact{
 		this.photo = photo;
 	}
 	
-	@JsonSetter //n'affiche par le passWord en reponse JSON
+	@JsonIgnore //n'affiche par le passWord en reponse JSON
 	public String getPassWord() {
 		return passWord;
 	}
 	
+	@JsonProperty // permet de récupéré la propriété en requete
 	public void setPassWord(String passWord) {
 		this.passWord = passWord;
 	}
+	
+	@JsonIgnore 
+	public String getConfirm() {
+		return confirm;
+	}
+
+	@JsonProperty
+	public void setConfirm(String confirm) {
+		this.confirm = confirm;
+	}
+	
 	public Collection<Roles> getRoles() {
 		return roles;
 	}
@@ -114,8 +135,6 @@ public class Contact{
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
-	
 	
 	
 }

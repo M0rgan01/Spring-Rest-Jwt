@@ -13,9 +13,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum ErrorCode {
 	
     GLOBAL(2),
-    AUTHENTICATION(10), 
-    JWT_TOKEN_EXPIRED(11);
-    
+    REGISTRATION(9),
+    AUTHENTICATION(10),    
+    JWT_TOKEN_EXPIRED(11),
+	JWT_TOKEN_INVALID(12);
+	
+	
     private int errorCode;
 
     private ErrorCode(int errorCode) {
