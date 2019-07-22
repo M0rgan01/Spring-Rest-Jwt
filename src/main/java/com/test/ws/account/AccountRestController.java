@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +19,9 @@ import com.test.security.auth.model.UserContext;
 import com.test.security.response.ErrorCode;
 import com.test.security.response.ErrorResponse;
 import com.test.security.token.JwtService;
+import com.test.security.token.JwtToken;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 
 /**
  * 
@@ -36,7 +37,7 @@ public class AccountRestController {
 	private ContactService accountService;
 	@Autowired
 	private JwtService jwtService;
-
+		
 	@PostMapping(value = "/api/auth/register")
 	public ResponseEntity<?> register(@RequestBody Contact contact) throws BusinessException {
 
@@ -72,9 +73,11 @@ public class AccountRestController {
 	@GetMapping(value = "/api/auth/token")
 	public ResponseEntity<?> refreshToken(@RequestHeader(SecurityConstants.HEADER_REFRESH_STRING) String tokenRefresh) {
 
-		try {											
+		try {	
+			JwtToken token = new JwtToken(jwtService.extract(tokenRefresh));
+			
 			// on créer un token JWT, grace à la vérification du tokenRefresh
-			String jwt = jwtService.createAuthToken(jwtService.validateRefreshToken(tokenRefresh));
+			String jwt = jwtService.createAuthToken(jwtService.validateRefreshToken(token));
 			
 			HttpHeaders responseHeaders = new HttpHeaders();
 			responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
@@ -84,11 +87,11 @@ public class AccountRestController {
 
 		} catch (ExpiredJwtException e) {
 			return new ResponseEntity<ErrorResponse>(
-					ErrorResponse.of("error.jwt.expired", ErrorCode.JWT_TOKEN_EXPIRED, HttpStatus.NOT_ACCEPTABLE),
+					ErrorResponse.of(e.getMessage(), ErrorCode.JWT_TOKEN_EXPIRED, HttpStatus.NOT_ACCEPTABLE),
 					HttpStatus.NOT_ACCEPTABLE);
-		} catch (JwtException e) {					
+		} catch (BadCredentialsException e) {					
 			return new ResponseEntity<ErrorResponse>(
-					ErrorResponse.of("error.jwt.invalid", ErrorCode.JWT_TOKEN_INVALID, HttpStatus.NOT_ACCEPTABLE),
+					ErrorResponse.of(e.getMessage(), ErrorCode.JWT_TOKEN_INVALID, HttpStatus.NOT_ACCEPTABLE),
 					HttpStatus.NOT_ACCEPTABLE);
 		} catch (Exception e) {		
 			return new ResponseEntity<ErrorResponse>(

@@ -19,4 +19,6 @@ public interface ContactService {
 	public void validateCreateContact(Contact contact) throws BusinessException;
 	public List<GrantedAuthority> getAuthorities(Collection<Roles> roles);
 	public String getPrincipal(Contact contact);
+	public void incorrectPassworld(Contact contact);
+	public void checkPermissionToLogin(Contact contact);
 }

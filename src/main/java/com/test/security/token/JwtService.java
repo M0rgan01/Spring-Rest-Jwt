@@ -48,7 +48,7 @@ public interface JwtService {
   * @param token --> token à vérifier
   * @return claims
   */
- public UserContext validateRefreshToken(String token);
+ public UserContext validateRefreshToken(JwtToken token);
  
  /**
   * Retire le préfixe précédent le token

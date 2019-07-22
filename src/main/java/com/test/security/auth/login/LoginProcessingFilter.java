@@ -68,7 +68,7 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
         String principal = contactService.getPrincipal(contact);
                     
         if(contact.getPassWord() == null || contact.getPassWord().isEmpty())
-        	throw new AuthenticationServiceException("empty.password");	
+        	throw new AuthenticationServiceException("contact.empty.password");	
         
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, contact.getPassWord());
 

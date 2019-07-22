@@ -19,6 +19,7 @@ import com.test.security.SecurityConstants;
 import com.test.security.auth.model.UserContext;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -53,10 +54,10 @@ public class JwtServiceImpl implements JwtService{
 	@Override
 	public String createAuthToken(UserContext userContext) {
 			if (userContext.getUsername() == null || userContext.getUsername().isEmpty()) 
-	            throw new IllegalArgumentException("Cannot create JWT Token without username");
+	            throw new IllegalArgumentException("jwt.auth.username.null");
 
 	        if (userContext.getAuthorities() == null || userContext.getAuthorities().isEmpty()) 
-	            throw new IllegalArgumentException("User doesn't have any privileges");
+	            throw new IllegalArgumentException("jwt.auth.authorities.null");
 	        
 	        	//construction du Json web token
 				String jwt = Jwts.builder()
@@ -72,7 +73,7 @@ public class JwtServiceImpl implements JwtService{
 	public String createRefreshToken(UserContext userContext) {	
 		
 		if (userContext.getUsername() == null || userContext.getUsername().isEmpty()) 
-            throw new IllegalArgumentException("Cannot create JWT Token without username");
+            throw new IllegalArgumentException("jwt.refresh.username.null");
 		
 		//construction du Json web token
 		String jwt = Jwts.builder()
@@ -86,27 +87,26 @@ public class JwtServiceImpl implements JwtService{
 
 		
 	@Override
-	public UserContext validateRefreshToken(String header) {
-		// on récupère le token dans un object Claims
-		Claims claims = Jwts.parser().setSigningKey(SecurityConstants.SECRET) // on assigne le secret
-				.parseClaimsJws(extract(header)) // on enlève le préfixe
-				.getBody(); // on récupère le corp
+	public UserContext validateRefreshToken(JwtToken token) {
 		
+		//vérification du token
+		Jws<Claims> claims = token.parseClaims(token.getToken());
+						
 		// on recupere le contact pour comparaison
-		Contact contact = contactService.findContactByUserName(claims.getSubject()).orElseThrow(() -> new UsernameNotFoundException("User not found: " + claims.getSubject()));
+		Contact contact = contactService.findContactByUserName(claims.getBody().getSubject()).orElseThrow(() -> new UsernameNotFoundException("contact.not.found"));
 					
 		//si le contact est toujours bon, alors le token est toujours valide
-		if(contact.isActive() == (boolean) claims.get(SecurityConstants.REFRESH_ACTIVE_PREFIX))
-			return UserContext.create(claims.getSubject(), contactService.getAuthorities(contact.getRoles()));
+		if(contact.isActive() != (boolean) claims.getBody().get(SecurityConstants.REFRESH_ACTIVE_PREFIX))
+			 throw new AuthenticationServiceException("contact.not.active");
 		
-		return null;
+		return UserContext.create(claims.getBody().getSubject(), contactService.getAuthorities(contact.getRoles()));
 	}
 
 	
 	@Override
 	public String extract(String header) {
 	      if (header == null || header.isEmpty()) {
-	            throw new AuthenticationServiceException("Authorization header cannot be blank!");
+	            throw new AuthenticationServiceException("authorization.header.blank");
 	        }
 
 	        return header.substring(SecurityConstants.TOKEN_PREFIX.length(), header.length());	

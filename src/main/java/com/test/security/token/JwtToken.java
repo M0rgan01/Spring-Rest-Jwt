@@ -44,13 +44,13 @@ public class JwtToken {
      */
     public Jws<Claims> parseClaims(String token) {
         try {
-            return Jwts.parser().setSigningKey(SecurityConstants.SECRET).parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, ""));
+            return Jwts.parser().setSigningKey(SecurityConstants.SECRET).parseClaimsJws(token);
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException ex) {
-            //logger.error("Invalid JWT Token", ex);
-            throw new BadCredentialsException("Invalid JWT token: ", ex);
-        } catch (ExpiredJwtException expiredEx) {
-           // logger.info("JWT Token is expired", expiredEx);
-            throw new JwtExpiredTokenException( "JWT Token expired", expiredEx);
+            throw new BadCredentialsException("jwt.invalid");
+        } catch (ExpiredJwtException expiredEx) {       
+            throw new JwtExpiredTokenException( "jwt.expired");
         }
     }
+    
+   
 }
