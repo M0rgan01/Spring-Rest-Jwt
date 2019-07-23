@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 
 import com.test.business.ContactService;
 import com.test.entities.Contact;
+import com.test.entities.Roles;
 import com.test.security.auth.model.UserContext;
 
 /**
@@ -25,11 +26,11 @@ import com.test.security.auth.model.UserContext;
  */
 @Component
 public class LoginAuthenticationProvider implements AuthenticationProvider {
-	private final BCryptPasswordEncoder encoder;
-	private final ContactService contactService;
-
+	private BCryptPasswordEncoder encoder;
+	private ContactService contactService;
+	
 	@Autowired
-	public LoginAuthenticationProvider(final ContactService contactService, final BCryptPasswordEncoder encoder) {
+	public LoginAuthenticationProvider(ContactService contactService, BCryptPasswordEncoder encoder) {
 		this.contactService = contactService;
 		this.encoder = encoder;
 	}
@@ -64,7 +65,7 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 			throw new InsufficientAuthenticationException("contact.roles.null");
 
 		UserContext userContext = UserContext.create(contact.getUserName(),
-				contactService.getAuthorities(contact.getRoles()));
+				Roles.getListAuthorities(contact.getRoles()));
 
 		return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
 	}

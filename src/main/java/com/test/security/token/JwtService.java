@@ -1,12 +1,6 @@
 package com.test.security.token;
 
-import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-
 import com.test.security.auth.model.UserContext;
-
-import io.jsonwebtoken.Claims;
 
 /**
  * Création, modification, et vérification de JWT
@@ -18,14 +12,7 @@ import io.jsonwebtoken.Claims;
  *
  */
 public interface JwtService {
-	/**
-	 * Récupère une liste de GrantedAuthority à partir de claims
-	 * 
-	 * @param claims --> claims contenant une liste de role
-	 * @return liste de GrantedAuthority
-	 */
- public List<GrantedAuthority> getListAuthorities(Claims claims);
- 
+	
  /**
   * Création d'un token d'authentification
   * 

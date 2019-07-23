@@ -12,7 +12,7 @@ public class SecurityConstants {
 	//@Value("${token.refresh.expiration.toMillis}")
 	public static final long EXPIRATION_TIME_REFRESH_TOKEN = 864_000_000;
 	//@Value("${token.auth.expiration.toMillis}")
-	public static final long EXPIRATION_TIME_AUTH_TOKEN = 300_000;
+	public static final long EXPIRATION_TIME_AUTH_TOKEN = 3_000;
 	//@Value("${token.prefix}")
 	public static final String TOKEN_PREFIX = "bearer "; // préfix que apparait avant le jwt
 	//@Value("${token.header.auth}")

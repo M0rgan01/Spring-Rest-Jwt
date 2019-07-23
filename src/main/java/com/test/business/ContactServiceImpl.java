@@ -1,10 +1,7 @@
 package com.test.business;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +30,7 @@ import com.test.exception.BusinessException;
  * 
  * @author pichat morgan
  * 
- * Classe service de gestion de contact
+ *         Classe service de gestion de contact
  *
  */
 @Service
@@ -82,10 +77,10 @@ public class ContactServiceImpl implements ContactService {
 	}
 
 	@Override
-	public Optional<Contact> findContactByEmail(String email) {		
+	public Optional<Contact> findContactByEmail(String email) {
 		return contactRepository.findByEmail(email);
 	}
-	
+
 	@Override
 	public void validateCreateContact(Contact contact) throws BusinessException {
 
@@ -100,55 +95,30 @@ public class ContactServiceImpl implements ContactService {
 		if (!contact.getPassWord().equals(contact.getConfirm()))
 			throw new BusinessException("contact.incorrect.password.confirm");
 
-		Contact testExist = findContactByUserName(contact.getUserName()).orElse(null);
+		Contact testExistUsername = findContactByUserName(contact.getUserName()).orElse(null);
 
-		if (testExist != null)
-			throw new BusinessException("contact.already.exist");
-	}
+		if (testExistUsername != null)
+			throw new BusinessException("contact.username.already.exist");
 
-	// Convertit une liste de role en liste de GrantedAuthority
-	@Override
-	public List<GrantedAuthority> getAuthorities(Collection<Roles> roles) {
+		Contact testExistEmail = findContactByEmail(contact.getMail().getEmail()).orElse(null);
 
-		if (roles == null || roles.isEmpty())
-			throw new IllegalArgumentException("contact.list.roles.empty");
-
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-		for (Roles role : roles) {
-			authorities.add(new SimpleGrantedAuthority(role.getRole()));
-		}
-		return authorities;
-	}
-
-	@Override
-	public String getPrincipal(Contact contact) {
-
-		// vérification de la validité de l'object
-		if (contact.getUserName() != null && !contact.getUserName().isEmpty()) {
-			return contact.getUserName();
-		
-		} else if (contact.getMail().getEmail() != null && !contact.getMail().getEmail().isEmpty()) {
-			return contact.getMail().getEmail();
-		
-		} else {
-			throw new AuthenticationServiceException("contact.empty.mail.or.username");
-		}
+		if (testExistEmail != null)
+			throw new BusinessException("contact.email.already.exist");
 
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public void incorrectPassworld(Contact contact) {
-		
+
 		contact.setTryConnection(contact.getTryConnection() + 1);
-		
-		if(contact.getTryConnection() >= tryIncorrectLogin) {
-			
+
+		if (contact.getTryConnection() >= tryIncorrectLogin) {
+
 			Calendar date = Calendar.getInstance();
-			date.add(Calendar.MINUTE, waitingMinutes);					
+			date.add(Calendar.MINUTE, waitingMinutes);
 			contact.setExpiryConnection(date.getTime());
-			
+
 			contactRepository.save(contact);
 			throw new AuthenticationServiceException("contact.tryConnection.out");
 		}
@@ -157,17 +127,17 @@ public class ContactServiceImpl implements ContactService {
 
 	@Override
 	public void checkPermissionToLogin(Contact contact) {
-		
-		if(!contact.isActive())
+
+		if (!contact.isActive())
 			throw new AuthenticationServiceException("contact.not.active");
-		
+
 		if (contact.getExpiryConnection() != null) {
-			if (contact.getExpiryConnection().after(new Date())) {				
-				throw new AuthenticationServiceException("contact.expiryConnection.after.date");				
+			if (contact.getExpiryConnection().after(new Date())) {
+				throw new AuthenticationServiceException("contact.expiryConnection.after.date");
 			} else {
 				contact.setTryConnection(0);
 				contact.setExpiryConnection(null);
-				contactRepository.save(contact);			
+				contactRepository.save(contact);
 			}
 		}
 	}

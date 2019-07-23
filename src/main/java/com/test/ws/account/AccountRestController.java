@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.test.business.ContactService;
 import com.test.entities.Contact;
+import com.test.entities.Roles;
 import com.test.exception.BusinessException;
 import com.test.security.SecurityConstants;
 import com.test.security.auth.model.UserContext;
@@ -49,7 +50,7 @@ public class AccountRestController {
 			contact = accountService.addRoleToContact(contact.getUserName(), "ROLE_USER");
 		
 			// on créer un token JWT
-			String jwt = jwtService.createAuthToken(UserContext.create(contact.getUserName(), accountService.getAuthorities(contact.getRoles())));
+			String jwt = jwtService.createAuthToken(UserContext.create(contact.getUserName(), Roles.getListAuthorities(contact.getRoles())));
 			String jwtRefresh = jwtService.createRefreshToken(UserContext.create(contact.getUserName(), null));
 
 			// on l'ajoute au headers de la réponse
@@ -75,14 +76,14 @@ public class AccountRestController {
 
 		try {	
 			JwtToken token = new JwtToken(jwtService.extract(tokenRefresh));
-			
+								
 			// on créer un token JWT, grace à la vérification du tokenRefresh
 			String jwt = jwtService.createAuthToken(jwtService.validateRefreshToken(token));
-			
+								
 			HttpHeaders responseHeaders = new HttpHeaders();
 			responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
 			responseHeaders.add(SecurityConstants.HEADER_REFRESH_STRING, SecurityConstants.TOKEN_PREFIX + tokenRefresh);
-
+			
 			return new ResponseEntity<String>(null, responseHeaders, HttpStatus.OK);
 
 		} catch (ExpiredJwtException e) {

@@ -1,14 +1,16 @@
 package com.test.security.auth.jwt;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import com.test.entities.Roles;
+import com.test.security.SecurityConstants;
 import com.test.security.auth.model.UserContext;
 import com.test.security.token.JwtAuthenticationToken;
-import com.test.security.token.JwtService;
 import com.test.security.token.JwtToken;
 
 import io.jsonwebtoken.Claims;
@@ -24,12 +26,7 @@ import io.jsonwebtoken.Jws;
  */
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {  
-    private final JwtService jwtService;
-    
-    @Autowired
-    public JwtAuthenticationProvider(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
+  
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -42,8 +39,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         // récupère le sujet (username)
         String subject = jwsClaims.getBody().getSubject();
         
+        @SuppressWarnings("unchecked")
+		List<String> listRoles = jwsClaims.getBody().get(SecurityConstants.AUTHORITIES_PREFIX, List.class);
+        
         //création d'un utilisateur grace au nom à la liste de role contenu dans le token
-        UserContext context = UserContext.create(subject, jwtService.getListAuthorities(jwsClaims.getBody()));
+        UserContext context = UserContext.create(subject, Roles.getListAuthorities(listRoles));
           
         return new JwtAuthenticationToken(context, context.getAuthorities());
     }

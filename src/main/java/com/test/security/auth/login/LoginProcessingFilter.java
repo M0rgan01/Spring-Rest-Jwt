@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.test.business.ContactService;
 import com.test.entities.Contact;
 import com.test.security.exception.AuthMethodNotSupportedException;
 
@@ -39,15 +38,13 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
     private final ObjectMapper objectMapper;
-    private final ContactService contactService;
        
     public LoginProcessingFilter(String defaultProcessUrl, AuthenticationSuccessHandler successHandler, 
-            AuthenticationFailureHandler failureHandler, ObjectMapper mapper, ContactService contactService) {
+            AuthenticationFailureHandler failureHandler, ObjectMapper mapper) {
         super(defaultProcessUrl);
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
-        this.objectMapper = mapper;
-        this.contactService = contactService;
+        this.objectMapper = mapper;      
     }
 
     @Override
@@ -64,13 +61,14 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
 
         //récupération du json contenu dans le corp de requete
         Contact contact = objectMapper.readValue(request.getInputStream(), Contact.class);
-        
-        String principal = contactService.getPrincipal(contact);
-                    
+                                 
+        // vérification de la validité de l'object
+		if (contact.getUserName() == null && contact.getUserName().isEmpty()) 
+			throw new AuthenticationServiceException("contact.empty.mail.or.username");
         if(contact.getPassWord() == null || contact.getPassWord().isEmpty())
         	throw new AuthenticationServiceException("contact.empty.password");	
         
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, contact.getPassWord());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(contact.getUserName(), contact.getPassWord());
 
         //processus d'authentification
         return this.getAuthenticationManager().authenticate(token);

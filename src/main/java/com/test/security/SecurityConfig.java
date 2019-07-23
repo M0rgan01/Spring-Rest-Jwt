@@ -21,7 +21,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.test.business.ContactService;
 import com.test.security.auth.SkipPathRequestMatcher;
 import com.test.security.auth.handler.RestAuthenticationEntryPoint;
 import com.test.security.auth.jwt.JwtAuthenticationProvider;
@@ -59,9 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationSuccessHandler successHandler; // succès d'authentification personnalisé
 	@Autowired
 	private AuthenticationFailureHandler failureHandler; // succès d'authentification par mauvais login/JWT personnalisé
-	@Autowired
-	private ContactService contactService;
-	
+		
 	/**
 	 * 	Création du filtre d'authentification par login
 	 * 
@@ -71,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected LoginProcessingFilter buildLoginProcessingFilter(String loginEntryPoint) throws Exception {
 		LoginProcessingFilter filter = new LoginProcessingFilter(loginEntryPoint, successHandler, failureHandler,
-				objectMapper, contactService);
+				objectMapper);
 		filter.setAuthenticationManager(this.authenticationManager);
 		return filter;
 	}
