@@ -44,7 +44,7 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 		// récupération des information de connection
 		String username = (String) authentication.getPrincipal();
 		String password = (String) authentication.getCredentials();
-
+		
 		// récupération du contact pour la comparaison
 		Contact contact = contactService.findContactByUserName(username)
 				.orElseGet(() -> contactService.findContactByEmail(username)
