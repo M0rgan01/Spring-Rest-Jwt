@@ -66,7 +66,7 @@ public class JwtServiceImpl implements JwtService {
 
 	@Override
 	public UserContext validateRefreshToken(JwtToken token) {
-
+	
 		// vérification du token
 		Jws<Claims> claims = token.parseClaims(token.getToken());
 

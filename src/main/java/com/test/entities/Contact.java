@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -51,6 +52,7 @@ public class Contact {
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Collection<Roles> roles = new HashSet<>();
+	@Valid
 	@OneToOne(cascade = CascadeType.ALL)
 	private Mail mail;
 	

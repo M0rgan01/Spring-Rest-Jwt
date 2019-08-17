@@ -65,7 +65,7 @@ public class AccountRestController {
 					ErrorResponse.of(e.getMessage(), ErrorCode.REGISTRATION, HttpStatus.NOT_ACCEPTABLE),
 					HttpStatus.NOT_ACCEPTABLE);
 		} catch (Exception e) {
-			return new ResponseEntity<ErrorResponse>(
+			return new ResponseEntity<ErrorResponse>(					
 					ErrorResponse.of("Une erreur est survenue", ErrorCode.GLOBAL, HttpStatus.INTERNAL_SERVER_ERROR),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -82,8 +82,8 @@ public class AccountRestController {
 								
 			HttpHeaders responseHeaders = new HttpHeaders();
 			responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
-			responseHeaders.add(SecurityConstants.HEADER_REFRESH_STRING, SecurityConstants.TOKEN_PREFIX + tokenRefresh);
-			
+			responseHeaders.add(SecurityConstants.HEADER_REFRESH_STRING, tokenRefresh);
+					
 			return new ResponseEntity<String>(null, responseHeaders, HttpStatus.OK);
 
 		} catch (ExpiredJwtException e) {
