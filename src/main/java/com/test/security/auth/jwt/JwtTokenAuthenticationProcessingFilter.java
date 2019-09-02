@@ -44,10 +44,10 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-    		
+    	    	
     	//on récupère le token
         String tokenPayload = request.getHeader(SecurityConstants.HEADER_AUTH_STRING);
-                   
+               
         // on enlève le préfixe et on créé un objet JwtToken
         JwtToken token = new JwtToken(jwtService.extract(tokenPayload));
               

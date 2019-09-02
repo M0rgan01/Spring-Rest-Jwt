@@ -7,7 +7,7 @@ import com.test.entities.Roles;
 import com.test.exception.BusinessException;
 
 public interface ContactService {
-	public Contact saveContact(Contact c);
+	public Contact createContact(Contact c) throws BusinessException;
 	public Roles saveRole(Roles r);
 	public Contact addRoleToContact(String username, String roleName);
 	public Optional<Contact> findContactByUserName(String username);

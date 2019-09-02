@@ -83,7 +83,7 @@ public class AccountRestController {
 			HttpHeaders responseHeaders = new HttpHeaders();
 			responseHeaders.add(SecurityConstants.HEADER_AUTH_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
 			responseHeaders.add(SecurityConstants.HEADER_REFRESH_STRING, tokenRefresh);
-					
+			
 			return new ResponseEntity<String>(null, responseHeaders, HttpStatus.OK);
 
 		} catch (ExpiredJwtException e) {

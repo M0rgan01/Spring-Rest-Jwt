@@ -38,7 +38,7 @@ public class LoginAwareAuthenticationFailureHandler implements AuthenticationFai
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {
-		
+			
 		// mise en place du code et du contenu de la réponse
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -46,7 +46,7 @@ public class LoginAwareAuthenticationFailureHandler implements AuthenticationFai
 		 if (e instanceof JwtExpiredTokenException) {
 			mapper.writeValue(response.getWriter(), ErrorResponse.of(e.getMessage(), ErrorCode.JWT_TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED));
 		}
-		
+		 
 		mapper.writeValue(response.getWriter(), ErrorResponse.of(e.getMessage(), ErrorCode.AUTHENTICATION, HttpStatus.UNAUTHORIZED));
 	}
 }

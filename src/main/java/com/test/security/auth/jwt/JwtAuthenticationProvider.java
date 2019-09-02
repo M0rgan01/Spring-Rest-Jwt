@@ -41,7 +41,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         
         @SuppressWarnings("unchecked")
 		List<String> listRoles = jwsClaims.getBody().get(SecurityConstants.AUTHORITIES_PREFIX, List.class);
-        
+                 
         //création d'un utilisateur grace au nom à la liste de role contenu dans le token
         UserContext context = UserContext.create(subject, Roles.getListAuthorities(listRoles));
           

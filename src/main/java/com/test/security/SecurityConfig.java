@@ -35,7 +35,7 @@ import com.test.security.token.JwtService;
  * 
  * @author pichat morgan
  *
- * 20 Juillet 2019
+ *         20 Juillet 2019
  *
  */
 @Configuration
@@ -58,9 +58,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationSuccessHandler successHandler; // succès d'authentification personnalisé
 	@Autowired
 	private AuthenticationFailureHandler failureHandler; // succès d'authentification par mauvais login/JWT personnalisé
-		
+
 	/**
-	 * 	Création du filtre d'authentification par login
+	 * Création du filtre d'authentification par login
 	 * 
 	 * @param loginEntryPoint --> URL de login
 	 * @return LoginProcessingFilter --> filtre configuré
@@ -77,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * Création du filtre d'authentification par jwt
 	 * 
 	 * @param pathsToSkip --> URL non utilisé pour le filtre
-	 * @param pattern --> URL utilisé pour le filtre
+	 * @param pattern     --> URL utilisé pour le filtre
 	 * @return JwtTokenAuthenticationProcessingFilter --> filtre configuré
 	 * @throws Exception
 	 */
@@ -90,8 +90,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return filter;
 	}
 
-	
-	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// processus d'authentification par login
@@ -102,52 +100,57 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+
+		// liste des url ne nécéssitant pas une authentication
+		List<String> permitAllEndpointList = Arrays.asList(SecurityConstants.AUTHENTICATED_URL,
+				SecurityConstants.STORE_URL);
 	
-		// list des url d'authentification
-		List<String> permitAllEndpointList = Arrays.asList(
-				SecurityConstants.AUTHENTICATED_URL	           
-	        );
-		
 		// prend en compte la config cors initialiser dans la config des beans
 		http.cors();
 
 		// desactive la protection par token generere automatiquement pour la faille
 		// crrf
-		http.csrf().disable() .exceptionHandling()
-        .authenticationEntryPoint(this.authenticationEntryPoint);
+		http.csrf().disable().exceptionHandling().authenticationEntryPoint(this.authenticationEntryPoint);
 
 		// desacive la creation de session par spring
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-		//requete ne nécésitant aucune authentification
-		http.authorizeRequests().antMatchers(permitAllEndpointList.toArray(new String[permitAllEndpointList.size()])).permitAll();
+			
+		// requete ne nécésitant aucune authentification
+		http.authorizeRequests().antMatchers(permitAllEndpointList.toArray(new String[permitAllEndpointList.size()]))
+				.permitAll();
 		
-		//requete nécésitant un Role particulier
-		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/tasks/**").hasAnyAuthority("ROLE_ADMIN");
+		// requete nécésitant un Role particulier
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/edit/products/photo/**").hasAnyAuthority("ROLE_ADMIN");
 		
-		//requete nécésitant une authentification
+		// requete nécésitant une authentification
 		http.authorizeRequests().anyRequest().authenticated();
-		
-		//filtre pour le processus de login initial, s'effectue uniquement à l'adresse indiqué en param 1
-		http.addFilterBefore(buildLoginProcessingFilter(SecurityConstants.AUTHENTICATION_URL), UsernamePasswordAuthenticationFilter.class);
-		
-		//filtre pour le processus de login par JWT, ne s'éffectue par pour les adresse en params 1, et est utilisé pour les adresse en params 2
-		http.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(permitAllEndpointList, SecurityConstants.API_ROOT_URL), UsernamePasswordAuthenticationFilter.class);
-		
+
+		// filtre pour le processus de login initial, s'effectue uniquement à l'adresse
+		// indiqué en param 1
+		http.addFilterBefore(buildLoginProcessingFilter(SecurityConstants.AUTHENTICATION_URL),
+				UsernamePasswordAuthenticationFilter.class);
+
+		// filtre pour le processus de login par JWT, ne s'éffectue pas pour les adresse
+		// en params 1, et est utilisé pour les adresse en params 2
+		http.addFilterBefore(
+				buildJwtTokenAuthenticationProcessingFilter(permitAllEndpointList, SecurityConstants.API_ROOT_URL),
+				UsernamePasswordAuthenticationFilter.class);
+
 	}
 
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-	
+
 	// indique les autorisation de lecture des Headers --> sans ces indications, le
 	// client (Angular) n'y a pas accès
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		// indique les url autorisé
-		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+		//configuration.setAllowedOrigins(Arrays.asList("*"));
 		// méthode autorisé
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		// en-tête autorisé
@@ -161,6 +164,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
-
 
 }

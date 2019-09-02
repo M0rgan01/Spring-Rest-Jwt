@@ -12,7 +12,7 @@ public class SecurityConstants {
 	//@Value("${token.refresh.expiration.toMillis}")
 	public static final long EXPIRATION_TIME_REFRESH_TOKEN = 864_000_000;
 	//@Value("${token.auth.expiration.toMillis}")
-	public static final long EXPIRATION_TIME_AUTH_TOKEN = 3_000;
+	public static final long EXPIRATION_TIME_AUTH_TOKEN = 300_000;
 	//@Value("${token.prefix}")
 	public static final String TOKEN_PREFIX = "bearer "; // préfix que apparait avant le jwt
 	//@Value("${token.header.auth}")
@@ -26,6 +26,7 @@ public class SecurityConstants {
 																	// dans le payload
 
 	//////////////////// PATH //////////////////
+	
 	//@Value("${url.authenticated}")
 	public static final String AUTHENTICATED_URL = "/api/auth/**"; // regroupement des URL d'authentification
 	//@Value("${url.authentication}")
@@ -34,5 +35,7 @@ public class SecurityConstants {
 	public static final String REFRESH_TOKEN_URL = "/api/auth/token"; // URL de rafraichissement de token
 	//@Value("${url.api.root}")
 	public static final String API_ROOT_URL = "/api/**";
-
+	
+	public static final String STORE_URL = "/api/store/**"; 
+	
 }

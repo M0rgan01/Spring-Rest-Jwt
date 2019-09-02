@@ -50,7 +50,9 @@ public class ContactServiceImpl implements ContactService {
 	private RoleRepository roleRepository;
 
 	@Override
-	public Contact saveContact(Contact contact) {
+	public Contact createContact(Contact contact) throws BusinessException {
+		validateCreateContact(contact);
+		contact.setActive(true);
 		String hashPW = bCryptPasswordEncoder.encode(contact.getPassWord());
 		contact.setPassWord(hashPW);
 		return contactRepository.save(contact);
